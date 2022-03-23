@@ -6,7 +6,7 @@ jobs:
   build-linux:
     env:
       context: .
-      image_name: container-noresm
+      image_name: noresm-container
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 5
