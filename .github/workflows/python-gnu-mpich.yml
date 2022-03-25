@@ -35,18 +35,18 @@ jobs:
         VERSION=$(jq -r '.version' ${context}/version.json)
         TAGS=('latest')
         if [ "${VERSION}" ] && [ "${VERSION}" != "latest" ]; then
-            TAGS=("sn_gnu_mpich-${VERSION}")
+            TAGS+=("sn_gnu_mpich-${VERSION}")
         fi
         if [[ "${GITHUB_REF}" =~ refs/tags/(.*) ]]; then
-            TAGS=("git-sn_gnu_mpich-${BASH_REMATCH[1]}")
+            TAGS+=("git-sn_gnu_mpich-${BASH_REMATCH[1]}")
         fi
         ( IFS=$','; echo "${TAGS[*]}" )
     - name: Build and publish image to Quay
-      uses: redhat-actions/push-to-registry@v2
+      uses: docker/build-push-action@v2
       with:
         path: ${{ env.context }}/single_node
         registry: ${{ secrets.REGISTRY_SERVER }}
-        image: ${{ env.image_name }}
+        repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.image_name }}
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
-        tags: "sn_gnu_mpich-${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+        tags: "gnu_mpich-${{ steps.image_tags.outputs.IMAGE_TAGS }}"
